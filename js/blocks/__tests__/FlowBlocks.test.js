@@ -292,6 +292,28 @@ describe("FlowBlocks integration", () => {
         expect(activity.errorMsg).toHaveBeenCalledWith(NOINPUTERRORMSG, blk);
     });
 
+    test("DuplicateBlock treats non-finite counts as invalid input", () => {
+        const block = getBlock("duplicatenotes");
+        const blk = 0;
+
+        for (const count of [Infinity, -Infinity, NaN]) {
+            turtles = {};
+            activity.errorMsg.mockClear();
+            activity.blocks.blockList = {
+                0: { name: "duplicatenotes", connections: [null, 1, null, 2] },
+                1: { name: "visibleA", connections: [0, null] }
+            };
+            logo.connectionStore = { 0: { [blk]: [] } };
+
+            block.flow([count, 1], logo, 0, blk);
+
+            const turtle = activity.turtles.ithTurtle(0);
+            expect(activity.errorMsg).toHaveBeenCalledWith(NOINPUTERRORMSG, blk);
+            expect(turtle.singer.duplicateFactor).toBe(2);
+            expect(turtle.queue.map(queueBlock => queueBlock.count)).toEqual([2]);
+        }
+    });
+
     test("DuplicateBlock releases lock even when critical section throws", () => {
         const block = getBlock("duplicatenotes");
         const blk = 0;
