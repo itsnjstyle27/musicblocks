@@ -56,6 +56,20 @@ var SOLFEGECONVERSIONTABLE = {
     "B♭": "ti" + FLAT,
     "B": "ti",
     "B♯": "ti" + SHARP,
+    "C𝄪": "do" + DOUBLESHARP,
+    "D𝄪": "re" + DOUBLESHARP,
+    "E𝄪": "mi" + DOUBLESHARP,
+    "F𝄪": "fa" + DOUBLESHARP,
+    "G𝄪": "sol" + DOUBLESHARP,
+    "A𝄪": "la" + DOUBLESHARP,
+    "B𝄪": "ti" + DOUBLESHARP,
+    "C𝄫": "do" + DOUBLEFLAT,
+    "D𝄫": "re" + DOUBLEFLAT,
+    "E𝄫": "mi" + DOUBLEFLAT,
+    "F𝄫": "fa" + DOUBLEFLAT,
+    "G𝄫": "sol" + DOUBLEFLAT,
+    "A𝄫": "la" + DOUBLEFLAT,
+    "B𝄫": "ti" + DOUBLEFLAT,
     "R": _("rest")
 };
 

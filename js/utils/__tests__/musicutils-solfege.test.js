@@ -132,3 +132,31 @@ describe("musicutils-solfege", () => {
         });
     });
 });
+
+describe("letter names with double accidentals", () => {
+    const { getSolfege, noteIsSolfege } = require("../musicutils");
+
+    test.each([
+        ["C𝄪", "do𝄪"],
+        ["D𝄪", "re𝄪"],
+        ["E𝄪", "mi𝄪"],
+        ["F𝄪", "fa𝄪"],
+        ["G𝄪", "sol𝄪"],
+        ["A𝄪", "la𝄪"],
+        ["B𝄪", "ti𝄪"],
+        ["C𝄫", "do𝄫"],
+        ["D𝄫", "re𝄫"],
+        ["E𝄫", "mi𝄫"],
+        ["F𝄫", "fa𝄫"],
+        ["G𝄫", "sol𝄫"],
+        ["A𝄫", "la𝄫"],
+        ["B𝄫", "ti𝄫"]
+    ])("%s is a letter name and converts to %s", (note, solfege) => {
+        expect(noteIsSolfege(note)).toBe(false);
+        expect(getSolfege(note)).toBe(solfege);
+    });
+
+    test("a solfege name with a double accidental is still solfege", () => {
+        expect(noteIsSolfege("do𝄪")).toBe(true);
+    });
+});
