@@ -3766,6 +3766,56 @@ describe("Logo parseArg", () => {
             expect(logo.parseArg(logo, 0, 4, null, null)).toBe(1234);
         });
 
+        describe("in status matrix mode", () => {
+            const makeBlock = (name, connections) => ({
+                name,
+                value: null,
+                connections,
+                protoblock: { parameter: false, dockTypes: ["numberout"] },
+                isValueBlock: () => false
+            });
+            const number = {
+                name: "number",
+                value: 0.5,
+                protoblock: { parameter: false },
+                isValueBlock: () => true
+            };
+
+            beforeEach(() => {
+                logo.statusFields = [];
+                logo.inStatusMatrix = true;
+            });
+
+            test("evaluates a detached dectofrac block", () => {
+                logo.blockList = [makeBlock("dectofrac", [null, 1]), number];
+
+                expect(logo.parseArg(logo, 0, 0, null, null)).toBe("0.5");
+                expect(logo.statusFields).toEqual([]);
+            });
+
+            test("evaluates a detached hue block", () => {
+                logo.blockList = [makeBlock("hue", [null])];
+
+                expect(logo.parseArg(logo, 0, 0, null, null)).toBe(75);
+                expect(logo.statusFields).toEqual([]);
+            });
+
+            test("registers a dectofrac block inside a print block", () => {
+                logo.blockList = [makeBlock("dectofrac", [2, 1]), number, { name: "print" }];
+
+                logo.parseArg(logo, 0, 0, null, null);
+
+                expect(logo.statusFields).toEqual([[0, "dectofrac"]]);
+            });
+
+            test("evaluates a hue block whose parent is not a print block", () => {
+                logo.blockList = [makeBlock("hue", [1]), { name: "plus" }];
+
+                expect(logo.parseArg(logo, 0, 0, null, null)).toBe(75);
+                expect(logo.statusFields).toEqual([]);
+            });
+        });
+
         test("covers arg-function, non-string interval, and fallback id branches", () => {
             logo.blockList = [
                 {
