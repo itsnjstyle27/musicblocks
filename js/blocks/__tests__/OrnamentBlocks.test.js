@@ -361,4 +361,22 @@ describe("setupOrnamentBlocks", () => {
             );
         });
     });
+
+    describe("detached blocks in status matrix mode", () => {
+        beforeEach(() => {
+            logo.inStatusMatrix = true;
+            activity.blocks.blockList.detached = { connections: [null] };
+            activity.turtles.ithTurtle(0).singer.staccato = [4];
+        });
+
+        it("staccatofactor returns the factor", () => {
+            expect(createdBlocks["staccatofactor"].arg(logo, 0, "detached")).toEqual(4);
+            expect(logo.statusFields).toEqual([]);
+        });
+
+        it("slurfactor returns the factor", () => {
+            expect(createdBlocks["slurfactor"].arg(logo, 0, "detached")).toEqual(-4);
+            expect(logo.statusFields).toEqual([]);
+        });
+    });
 });

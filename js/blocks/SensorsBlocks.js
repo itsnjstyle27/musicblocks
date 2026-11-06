@@ -931,7 +931,7 @@ function setupSensorsBlocks(activity) {
         arg(logo, turtle, blk, receivedArg) {
             if (
                 logo.inStatusMatrix &&
-                activity.blocks.blockList[activity.blocks.blockList[blk].connections[0]].name ===
+                activity.blocks.blockList[activity.blocks.blockList[blk].connections[0]]?.name ===
                     "print"
             ) {
                 logo.statusFields.push([blk, "toascii"]);

@@ -443,4 +443,22 @@ describe("setupHeapBlocks", () => {
             expect(activity.errorMsg).toHaveBeenCalledWith("No input provided", 70);
         });
     });
+
+    describe("detached blocks in status matrix mode", () => {
+        beforeEach(() => {
+            logo.inStatusMatrix = true;
+            activity.blocks.blockList[11] = { connections: [null] };
+            setTurtleHeap(0, [4, 5, 6]);
+        });
+
+        it("heap returns the heap", () => {
+            expect(createdBlocks["heap"].arg(logo, 0, 11)).toEqual("[4,5,6]");
+            expect(logo.statusFields).toEqual([]);
+        });
+
+        it("heapLength returns the length", () => {
+            expect(createdBlocks["heapLength"].arg(logo, 0, 11)).toEqual(3);
+            expect(logo.statusFields).toEqual([]);
+        });
+    });
 });

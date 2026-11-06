@@ -75,7 +75,7 @@ function setupHeapBlocks(activity) {
 
             if (
                 logo.inStatusMatrix &&
-                activity.blocks.blockList[activity.blocks.blockList[blk].connections[0]].name ===
+                activity.blocks.blockList[activity.blocks.blockList[blk].connections[0]]?.name ===
                     "print"
             ) {
                 logo.statusFields.push([blk, "heap"]);
@@ -217,7 +217,7 @@ function setupHeapBlocks(activity) {
             // If in status matrix, push information to the status fields
             if (
                 logo.inStatusMatrix &&
-                activity.blocks.blockList[activity.blocks.blockList[blk].connections[0]].name ===
+                activity.blocks.blockList[activity.blocks.blockList[blk].connections[0]]?.name ===
                     "print"
             ) {
                 logo.statusFields.push([blk, "heapLength"]);

@@ -81,7 +81,7 @@ function setupOrnamentBlocks(activity) {
 
             if (
                 logo.inStatusMatrix &&
-                activity.blocks.blockList[activity.blocks.blockList[blk].connections[0]].name ===
+                activity.blocks.blockList[activity.blocks.blockList[blk].connections[0]]?.name ===
                     "print"
             ) {
                 // Push staccato status to the status fields
@@ -157,7 +157,7 @@ function setupOrnamentBlocks(activity) {
 
             if (
                 logo.inStatusMatrix &&
-                activity.blocks.blockList[activity.blocks.blockList[blk].connections[0]].name ===
+                activity.blocks.blockList[activity.blocks.blockList[blk].connections[0]]?.name ===
                     "print"
             ) {
                 // Push slur status to the status fields

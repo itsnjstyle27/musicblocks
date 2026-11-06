@@ -588,4 +588,17 @@ describe("setupSensorsBlocks", () => {
             expect(ret).toEqual(dummyStageMouseDown());
         });
     });
+
+    describe("detached blocks in status matrix mode", () => {
+        it("toascii reports the missing input", () => {
+            activity.blocks.blockList.detached = { connections: [null, null] };
+            logo.inStatusMatrix = true;
+
+            const block = DummyFlowBlock.createdBlocks["toascii"];
+
+            expect(block.arg(logo, turtleIndex, "detached")).toEqual("A");
+            expect(activity.errorMsg).toHaveBeenCalledWith(NOINPUTERRORMSG, "detached");
+            expect(logo.statusFields).toEqual([]);
+        });
+    });
 });

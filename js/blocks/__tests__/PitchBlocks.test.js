@@ -1852,4 +1852,26 @@ describe("setupPitchBlocks", () => {
             });
         });
     });
+
+    describe("detached blocks in status matrix mode", () => {
+        it.each([
+            "transpositionfactor",
+            "deltapitch",
+            "mypitch",
+            "pitchinhertz",
+            "currentpitch",
+            "outputtools"
+        ])("%s gives the same value as outside status mode", name => {
+            const block = createdBlocks[name];
+            activity.blocks.blockList[10].connections = [null, null];
+            turtles.ithTurtle(0).singer.lastNotePlayed = ["C4", 0.5];
+            logo.inStatusMatrix = false;
+            const expected = block.arg(logo, 0, 10);
+
+            logo.inStatusMatrix = true;
+
+            expect(block.arg(logo, 0, 10)).toEqual(expected);
+            expect(logo.statusFields).toEqual([]);
+        });
+    });
 });

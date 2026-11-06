@@ -153,7 +153,7 @@ function setupPitchBlocks(activity) {
         arg(logo, turtle, blk) {
             if (
                 logo.inStatusMatrix &&
-                activity.blocks.blockList[activity.blocks.blockList[blk].connections[0]].name ===
+                activity.blocks.blockList[activity.blocks.blockList[blk].connections[0]]?.name ===
                     "print"
             ) {
                 logo.statusFields.push([blk, "transposition"]);
@@ -235,7 +235,7 @@ function setupPitchBlocks(activity) {
         arg(logo, turtle, blk) {
             if (
                 logo.inStatusMatrix &&
-                activity.blocks.blockList[activity.blocks.blockList[blk].connections[0]].name ===
+                activity.blocks.blockList[activity.blocks.blockList[blk].connections[0]]?.name ===
                     "print"
             ) {
                 logo.statusFields.push([blk, "mypitch"]);
@@ -299,7 +299,7 @@ function setupPitchBlocks(activity) {
         arg(logo, turtle, blk) {
             if (
                 logo.inStatusMatrix &&
-                activity.blocks.blockList[activity.blocks.blockList[blk].connections[0]].name ===
+                activity.blocks.blockList[activity.blocks.blockList[blk].connections[0]]?.name ===
                     "print"
             ) {
                 logo.statusFields.push([blk, "mypitch"]);
@@ -368,7 +368,7 @@ function setupPitchBlocks(activity) {
         arg(logo, turtle, blk) {
             if (
                 logo.inStatusMatrix &&
-                activity.blocks.blockList[activity.blocks.blockList[blk].connections[0]].name ===
+                activity.blocks.blockList[activity.blocks.blockList[blk].connections[0]]?.name ===
                     "print"
             ) {
                 logo.statusFields.push([blk, "pitchinhertz"]);
@@ -410,7 +410,7 @@ function setupPitchBlocks(activity) {
             const tur = activity.turtles.ithTurtle(activity.turtles.companionTurtle(turtle));
             if (
                 !logo.inStatusMatrix ||
-                activity.blocks.blockList[activity.blocks.blockList[blk].connections[0]].name !==
+                activity.blocks.blockList[activity.blocks.blockList[blk].connections[0]]?.name !==
                     "outputtools"
             ) {
                 if (tur.singer.lastNotePlayed !== null) {
@@ -488,7 +488,7 @@ function setupPitchBlocks(activity) {
         arg(logo, turtle, blk, receivedArg) {
             if (
                 logo.inStatusMatrix &&
-                activity.blocks.blockList[activity.blocks.blockList[blk].connections[0]].name ===
+                activity.blocks.blockList[activity.blocks.blockList[blk].connections[0]]?.name ===
                     "print"
             ) {
                 logo.statusFields.push([blk, "outputtools"]);

@@ -504,4 +504,26 @@ describe("setupVolumeBlocks", () => {
             expect(ret).toEqual([88, 1]);
         });
     });
+
+    describe("detached blocks in status matrix mode", () => {
+        beforeEach(() => {
+            logo.inStatusMatrix = true;
+            activity.blocks.blockList.detached = { connections: [null, null] };
+        });
+
+        it("synthvolumefactor returns 0 without a synth name", () => {
+            const block = createdBlocks["synthvolumefactor"];
+
+            expect(block.arg(logo, turtleIndex, "detached", "piano")).toEqual(0);
+            expect(logo.statusFields).toEqual([]);
+        });
+
+        it("notevolumefactor returns the master volume", () => {
+            Singer.VolumeActions.masterVolume = 85;
+            const block = createdBlocks["notevolumefactor"];
+
+            expect(block.arg(logo, turtleIndex, "detached")).toEqual(85);
+            expect(logo.statusFields).toEqual([]);
+        });
+    });
 });

@@ -1237,7 +1237,7 @@ function setupFlowBlocks(activity) {
          */
         arg(logo, turtle, blk) {
             const blockList = activity.blocks.blockList;
-            if (logo.inStatusMatrix && blockList[blockList[blk].connections[0]].name === "print") {
+            if (logo.inStatusMatrix && blockList[blockList[blk].connections[0]]?.name === "print") {
                 logo.statusFields.push([blk, "duplicate"]);
             } else {
                 return (blockList[blk].value =

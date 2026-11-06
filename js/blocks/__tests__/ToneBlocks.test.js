@@ -690,4 +690,34 @@ describe("setupToneBlocks", () => {
             expect(ret).toEqual("audioValue");
         });
     });
+
+    describe("detached blocks in status matrix mode", () => {
+        beforeEach(() => {
+            logo.inStatusMatrix = true;
+            logo.statusFields = [];
+        });
+
+        it("synthname returns the last instrument", () => {
+            activity.blocks.blockList.detached = { connections: [null] };
+            activity.turtles.ithTurtle(0).singer.instrumentNames = ["first", "second"];
+
+            expect(getBlock("synthname").arg(logo, 0, "detached")).toEqual("second");
+            expect(logo.statusFields).toEqual([]);
+        });
+
+        it("customsample returns its value", () => {
+            activity.blocks.blockList.detached = {
+                connections: [null, null, null, null],
+                value: ["name", "data", "re", 5]
+            };
+
+            expect(getBlock("customsample").arg(logo, 0, "detached")).toEqual([
+                "name",
+                "data",
+                "re",
+                5
+            ]);
+            expect(logo.statusFields).toEqual([]);
+        });
+    });
 });

@@ -987,4 +987,14 @@ describe("FlowBlocks integration", () => {
         const whileBlk = getBlock("while");
         expect(whileBlk.flow([true], logo, 0, 8)).toBeUndefined();
     });
+
+    test("DuplicateFactorBlock returns the factor for a detached block in status mode", () => {
+        const block = getBlock("duplicatefactor");
+        activity.blocks.blockList[11] = { connections: [null] };
+        logo.inStatusMatrix = true;
+        logo.statusFields = [];
+
+        expect(block.arg(logo, 0, 11)).toBe(activity.turtles.ithTurtle(0).singer.duplicateFactor);
+        expect(logo.statusFields).toEqual([]);
+    });
 });
