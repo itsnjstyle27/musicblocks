@@ -15,7 +15,7 @@
 // some are just risky paths that have no tests at all.
 //
 // Rough list of what this covers:
-//   - _iterationBudget initialisation bug (NaN means infinite loops can't stop)
+//   - the iteration limit that stops infinite loops
 //   - resetTemperament / setUserTemperament (temperament leaks between runs)
 //   - _cleanupAfterCompletion (zombie audio - instruments not stopped)
 //   - notationMIDI (buffer never tested, drum handling untested)
@@ -232,37 +232,25 @@ function makeActivity(turtle) {
     };
 }
 
-// ─── iteration budget ────────────────────────────────────────────────────────
+// ─── iteration limit ─────────────────────────────────────────────────────────
 //
-// logo.js lines 340-341:
-//   this._iterationBudget = this._MAX_ITERATIONS + 1;
-//   this._MAX_ITERATIONS = 1000000;
-//
-// _MAX_ITERATIONS is set on the line AFTER it's used, so _iterationBudget
-// gets undefined + 1 = NaN. Then the guard `if (--logo._iterationBudget <= 0)`
-// never fires because NaN comparisons are always false. Infinite loops can run
-// forever and freeze the browser tab.
+// runFromBlockNow counts the blocks each turtle runs and stops the run when a
+// turtle goes over _MAX_ITERATIONS, so an infinite loop can't freeze the tab.
 
-describe("_iterationBudget init order", () => {
+describe("iteration limit", () => {
     beforeEach(resetGlobals);
 
-    // BUG: this test is expected to FAIL until the init-order bug is fixed.
-    // logo.js line 340 sets _iterationBudget = this._MAX_ITERATIONS + 1
-    // but _MAX_ITERATIONS is only assigned on line 341, so _iterationBudget
-    // gets undefined + 1 = NaN. The infinite-loop guard then never triggers.
-    // Tracked: fix by swapping the two lines so _MAX_ITERATIONS comes first.
-    test("BUG: _iterationBudget is NaN because _MAX_ITERATIONS is set one line too late", () => {
+    test("no turtle has used any iterations yet", () => {
         const logo = new Logo(makeActivity());
-        // this will fail (NaN) until the two lines in the constructor are swapped
-        expect(Number.isFinite(logo._iterationBudget)).toBe(true);
-        expect(logo._iterationBudget).toBe(logo._MAX_ITERATIONS + 1);
+        expect(Number.isFinite(logo._MAX_ITERATIONS)).toBe(true);
+        expect(logo._iterationCounts).toEqual({});
     });
 
     test("the infinite loop guard actually stops execution when budget runs out", () => {
         const activity = makeActivity();
         const logo = new Logo(activity);
 
-        logo._iterationBudget = 1;
+        logo._iterationCounts[0] = logo._MAX_ITERATIONS;
         logo.blockList = [
             {
                 name: "print",

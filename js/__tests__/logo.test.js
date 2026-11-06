@@ -501,7 +501,7 @@ describe("Logo constructor", () => {
 
     test("initializes iteration budget and maximum iterations", () => {
         expect(logo._MAX_ITERATIONS).toBe(1000000);
-        expect(logo._iterationBudget).toBe(1000001);
+        expect(logo._iterationCounts).toEqual({});
     });
 
     test("initializes widget properties to null/false", () => {
@@ -3201,7 +3201,7 @@ describe("Logo runFromBlockNow", () => {
                 })
             };
 
-            logo._iterationBudget = 1;
+            logo._iterationCounts[0] = logo._MAX_ITERATIONS;
             logo.blockList = [makeFlowBlock("noop")];
 
             logo.runFromBlockNow(logo, 0, 0, 0, null);
@@ -3243,12 +3243,49 @@ describe("Logo runFromBlockNow", () => {
 
     describe("limits and plugin dispatch", () => {
         test("stops execution and reports error when MAX_ITERATIONS exceeded", () => {
-            logo._iterationBudget = 1;
+            logo._iterationCounts[0] = logo._MAX_ITERATIONS;
             logo.blockList = [makeFlowBlock("noop")];
 
             logo.runFromBlockNow(logo, 0, 0, 0, null);
 
             expect(mockActivity.errorMsg).toHaveBeenCalled();
+            expect(logo.stopTurtle).toBe(true);
+        });
+
+        test("counts iterations for each turtle on its own", () => {
+            logo.blockList = [makeFlowBlock("noop")];
+
+            logo.runFromBlockNow(logo, 0, 0, 0, null);
+            logo.runFromBlockNow(logo, 0, 0, 0, null);
+            logo.runFromBlockNow(logo, 1, 0, 0, null);
+
+            expect(logo._iterationCounts).toEqual({ 0: 2, 1: 1 });
+        });
+
+        test("one turtle near the limit does not use up another turtle's iterations", () => {
+            logo.blockList = [makeFlowBlock("noop")];
+            // Together these are over the limit, but neither turtle is looping forever.
+            logo._iterationCounts[0] = logo._MAX_ITERATIONS - 1;
+            logo._iterationCounts[1] = logo._MAX_ITERATIONS - 1;
+
+            logo.runFromBlockNow(logo, 0, 0, 0, null);
+            logo.runFromBlockNow(logo, 1, 0, 0, null);
+
+            expect(mockActivity.errorMsg).not.toHaveBeenCalled();
+            expect(logo.stopTurtle).toBe(false);
+        });
+
+        test("the turtle that runs out of iterations is the one reported", () => {
+            const blockOfTurtle0 = makeFlowBlock("noop");
+            const blockOfTurtle1 = makeFlowBlock("noop");
+            logo.blockList = [blockOfTurtle0, blockOfTurtle1];
+            logo._iterationCounts[1] = logo._MAX_ITERATIONS;
+
+            logo.runFromBlockNow(logo, 0, 0, 0, null);
+            expect(mockActivity.errorMsg).not.toHaveBeenCalled();
+
+            logo.runFromBlockNow(logo, 1, 1, 0, null);
+            expect(mockActivity.errorMsg).toHaveBeenCalledWith(expect.any(String), 1);
             expect(logo.stopTurtle).toBe(true);
         });
 

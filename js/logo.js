@@ -384,7 +384,9 @@ class Logo {
         this._YIELD_AFTER_SYNC_RUNS = 1000;
         this._EXPORT_YIELD_AFTER_SYNC_RUNS = 100; // Sync yield threshold during exports.
         this._MAX_ITERATIONS = 1000000;
-        this._iterationBudget = this._MAX_ITERATIONS + 1;
+        // Blocks run so far in this run, per turtle. One limit shared by all of them
+        // would stop a project with many turtles that are all doing a lot of real work.
+        this._iterationCounts = {};
 
         // When running in step-by-step mode, the next command to run
         // is queued here.
@@ -1805,7 +1807,7 @@ class Logo {
         this.runGeneration += 1;
 
         this._syncCounter = 0;
-        this._iterationBudget = this._MAX_ITERATIONS + 1;
+        this._iterationCounts = {};
 
         this.blocks.unhighlightAll();
         this.blocks.bringToTop(); // Draw under the blocks.
@@ -2265,7 +2267,8 @@ class Logo {
 
             this.receivedArg = receivedArg;
 
-            if (--logo._iterationBudget <= 0) {
+            logo._iterationCounts[turtle] = (logo._iterationCounts[turtle] || 0) + 1;
+            if (logo._iterationCounts[turtle] > logo._MAX_ITERATIONS) {
                 logo.deps.errorHandler(
                     _("Infinite loop detected. Execution stopped to prevent browser freeze."),
                     blk
@@ -2273,7 +2276,7 @@ class Logo {
                 logo.stopTurtle = true;
                 logo._alreadyRunning = false;
                 logo._syncCounter = 0;
-                logo._iterationBudget = logo._MAX_ITERATIONS + 1;
+                logo._iterationCounts[turtle] = 0;
                 if (profilingEnabled) {
                     Logo._recordBlockTiming(logo, blk, profilingStart);
                     performanceTracker.exitBlock();
